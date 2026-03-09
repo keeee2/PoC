@@ -31,7 +31,7 @@ object UnityBridge {
             return view
         }
 
-        val view = unityPlayer?.getView() ?: return null
+        val view = unityPlayer?.view ?: return null
         (view.parent as? ViewGroup)?.removeView(view)
         unityPlayer?.windowFocusChanged(true)
         unityPlayer?.resume()
