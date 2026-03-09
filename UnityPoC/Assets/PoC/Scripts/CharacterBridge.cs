@@ -7,13 +7,13 @@ namespace PoC
         [SerializeField] private Animator animator;
 
         // Android에서 UnitySendMessage로 호출
-        void PlayEmotion(string emotionName)
+        public void PlayEmotion(string emotionName)
         {
             Debug.Log($"[PoC] PlayEmotion: {emotionName}");
             animator.SetTrigger(emotionName);
         }
 
-        void OnUnityLoaded(string _)
+        public void OnUnityLoaded(string _)
         {
             Debug.Log("[PoC] Unity loaded and ready");
         }
