@@ -2,7 +2,7 @@
 # ETERNA PoC — Unity UaaL + Compose 통합 자동화
 # ============================================================
 # 사용법: ComposePoC 폴더에서 실행
-#   .\Build.ps1
+#   C:\Users\user\PoC\.\Build.ps1
 # ============================================================
 
 $ErrorActionPreference = "Stop"
