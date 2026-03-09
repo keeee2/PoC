@@ -18,6 +18,40 @@ Write-Host "  ETERNA PoC Build Script" -ForegroundColor Cyan
 Write-Host "============================================" -ForegroundColor Cyan
 
 # ============================================================
+# Step 0: Unity batchmode — APK + Export
+# ============================================================
+Write-Host "`n[0/6] Unity 빌드..." -ForegroundColor Green
+
+$UnityPath = "C:\Program Files\Unity\Hub\Editor\6000.0.63f1\Editor\Unity.exe"
+$ProjectPath = "C:\Users\user\PoC\UnityPoC"
+
+# Unity 에디터 열려있으면 경고
+$unityProc = Get-Process Unity -ErrorAction SilentlyContinue
+if ($unityProc) {
+    Write-Host "  Unity 에디터가 실행 중입니다. 닫은 뒤 아무 키나 누르세요." -ForegroundColor Yellow
+    pause
+}
+
+# APK 빌드
+Write-Host "  APK 빌드 중..." -ForegroundColor Cyan
+& $UnityPath -quit -batchmode -buildTarget Android -projectPath $ProjectPath -executeMethod Editor.BuildScript.BuildAPK -logFile "$ProjectPath\Logs\build_apk.log"
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "  ERROR: APK 빌드 실패! 로그: $ProjectPath\Logs\build_apk.log" -ForegroundColor Red
+    exit 1
+}
+Write-Host "  APK OK" -ForegroundColor Green
+
+# Export
+Write-Host "  Export 중..." -ForegroundColor Cyan
+& $UnityPath -quit -batchmode -buildTarget Android -projectPath $ProjectPath -executeMethod Editor.BuildScript.ExportAndroidProject -logFile "$ProjectPath\Logs\build_export.log"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "  ERROR: Export 실패! 로그: $ProjectPath\Logs\build_export.log" -ForegroundColor Red
+    exit 1
+}
+Write-Host "  Export OK" -ForegroundColor Green
+
+# ============================================================
 # Step 1: unityLibrary 복사
 # ============================================================
 Write-Host "`n[1/6] unityLibrary 복사..." -ForegroundColor Green
@@ -48,6 +82,21 @@ if (Test-Path $srcShared) {
     Write-Host "  OK" -ForegroundColor Green
 } else {
     Write-Host "  스킵 (없음)" -ForegroundColor Yellow
+}
+
+# ============================================================
+# Step 2.5: unityLibrary AndroidManifest에서 LAUNCHER 제거
+# ============================================================
+Write-Host "`n[2.5/6] AndroidManifest LAUNCHER 제거..." -ForegroundColor Green
+
+$manifestPath = "$dstLibrary\src\main\AndroidManifest.xml"
+if (Test-Path $manifestPath) {
+    $xml = Get-Content $manifestPath -Raw
+    $patched = $xml -replace '(?s)<intent-filter>\s*<action android:name="android.intent.action.MAIN"\s*/>\s*<category android:name="android.intent.category.LAUNCHER"\s*/>\s*</intent-filter>', ''
+    Set-Content $manifestPath $patched -Encoding UTF8
+    Write-Host "  OK (LAUNCHER intent-filter 제거됨)" -ForegroundColor Green
+} else {
+    Write-Host "  WARNING: AndroidManifest.xml 없음" -ForegroundColor Yellow
 }
 
 # ============================================================

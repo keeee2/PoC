@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace PoC
+namespace PoC.Scripts
 {
     public class CharacterBridge : MonoBehaviour
     {
