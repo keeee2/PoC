@@ -33,20 +33,39 @@ if ($unityProc) {
 }
 
 # APK 빌드
-Write-Host "  APK 빌드 중..." -ForegroundColor Cyan
-& $UnityPath -quit -batchmode -buildTarget Android -projectPath $ProjectPath -executeMethod Editor.BuildScript.BuildAPK -logFile "$ProjectPath\Logs\build_apk.log"
+Write-Host "  APK 빌드 중... (수 분 소요)" -ForegroundColor Cyan
+$apkProc = Start-Process -FilePath $UnityPath -ArgumentList @(
+    "-quit", "-batchmode", "-nographics",
+    "-buildTarget", "Android",
+    "-projectPath", $ProjectPath,
+    "-executeMethod", "Editor.BuildScript.BuildAPK",
+    "-logFile", "$ProjectPath\Logs\build_apk.log"
+) -Wait -PassThru -NoNewWindow
 
-if ($LASTEXITCODE -ne 0) {
+Write-Host "  APK Exit Code: $($apkProc.ExitCode)" -ForegroundColor Yellow
+if ($apkProc.ExitCode -ne 0) {
     Write-Host "  ERROR: APK 빌드 실패! 로그: $ProjectPath\Logs\build_apk.log" -ForegroundColor Red
+    Write-Host "  마지막 로그:" -ForegroundColor Yellow
+    Get-Content "$ProjectPath\Logs\build_apk.log" -Tail 10
     exit 1
 }
 Write-Host "  APK OK" -ForegroundColor Green
 
 # Export
-Write-Host "  Export 중..." -ForegroundColor Cyan
-& $UnityPath -quit -batchmode -buildTarget Android -projectPath $ProjectPath -executeMethod Editor.BuildScript.ExportAndroidProject -logFile "$ProjectPath\Logs\build_export.log"
-if ($LASTEXITCODE -ne 0) {
+Write-Host "  Export 중... (수 분 소요)" -ForegroundColor Cyan
+$exportProc = Start-Process -FilePath $UnityPath -ArgumentList @(
+    "-quit", "-batchmode", "-nographics",
+    "-buildTarget", "Android",
+    "-projectPath", $ProjectPath,
+    "-executeMethod", "Editor.BuildScript.ExportAndroidProject",
+    "-logFile", "$ProjectPath\Logs\build_export.log"
+) -Wait -PassThru -NoNewWindow
+
+Write-Host "  Export Exit Code: $($exportProc.ExitCode)" -ForegroundColor Yellow
+if ($exportProc.ExitCode -ne 0) {
     Write-Host "  ERROR: Export 실패! 로그: $ProjectPath\Logs\build_export.log" -ForegroundColor Red
+    Write-Host "  마지막 로그:" -ForegroundColor Yellow
+    Get-Content "$ProjectPath\Logs\build_export.log" -Tail 10
     exit 1
 }
 Write-Host "  Export OK" -ForegroundColor Green
