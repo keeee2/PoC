@@ -111,7 +111,7 @@ Write-Host "`n[2.5/6] AndroidManifest LAUNCHER 제거..." -ForegroundColor Green
 $manifestPath = "$dstLibrary\src\main\AndroidManifest.xml"
 if (Test-Path $manifestPath) {
     $xml = Get-Content $manifestPath -Raw
-    $patched = $xml -replace '(?s)<intent-filter>\s*<action android:name="android.intent.action.MAIN"\s*/>\s*<category android:name="android.intent.category.LAUNCHER"\s*/>\s*</intent-filter>', ''
+    $patched = $xml -replace '(?s)<intent-filter>\s*(<(category|action)[^/]*/>\s*){2}</intent-filter>', ''
     Set-Content $manifestPath $patched -Encoding UTF8
     Write-Host "  OK (LAUNCHER intent-filter 제거됨)" -ForegroundColor Green
 } else {
