@@ -1,0 +1,75 @@
+# ===== Unity =====
+
+# Library 폴더 (에디터 캐시, 자동 생성)
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+
+# MemoryCaptures
+/[Mm]emoryCaptures/
+
+# Recordings
+/[Rr]ecordings/
+
+# Asset meta data (주석: .meta는 반드시 커밋해야 함!)
+# *.meta  ← 이거 주석 해제하면 안 됩니다
+
+# Auto-generated VS/Rider solution & project files
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Unity3D generated meta files
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Unity3D generated file on crash reports
+sysinfo.txt
+
+# Builds (Android/iOS)
+*.apk
+*.aab
+*.unitypackage
+*.app
+
+# Crashlytics
+crashlytics-build.properties
+
+# Gradle (Unity Android Export)
+.gradle/
+build/
+*.hprof
+
+# ===== IDE =====
+
+# JetBrains Rider
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== Android Export (UaaL) =====
+# Unity Export 결과물은 별도 관리
+# unityExport/ 폴더는 필요에 따라 포함/제외 결정
