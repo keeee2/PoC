@@ -6,9 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,14 +31,30 @@ class MainActivity : ComponentActivity() {
         setContent {
             var showUnity by remember { mutableStateOf(false) }
             if (showUnity) {
-                AndroidView<View>(
-                    factory = {
-                        UnityBridge.init(this@MainActivity)
-                        UnityBridge.getView()!!
-                    },
-                    modifier = Modifier.fillMaxSize()
-                )
-            } else {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    AndroidView<View>(
+                        factory = {
+                            UnityBridge.init(this@MainActivity)
+                            UnityBridge.getView()!!
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(24.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Button(onClick = {
+                            UnityBridge.sendMessage("PocCharacter", "PlayEmotion", "Happy")
+                        }) { Text("Happy") }
+
+                        Button(onClick = {
+                            UnityBridge.sendMessage("PocCharacter", "PlayEmotion", "Sad")
+                        }) { Text("Sad") }
+                    }
+                }
+            }else {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
