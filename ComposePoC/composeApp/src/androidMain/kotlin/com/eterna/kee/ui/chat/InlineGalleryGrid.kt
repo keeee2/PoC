@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -90,7 +92,12 @@ private fun CameraShortcutCell(onClick: () -> Unit) {
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("📷", fontSize = 24.sp)
+            Icon(
+                Icons.Filled.CameraAlt,
+                contentDescription = "카메라",
+                tint = EternaColors.TextSecondary,
+                modifier = Modifier.size(28.dp),
+            )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 "카메라",

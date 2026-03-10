@@ -63,7 +63,7 @@ private fun LauncherScreen(onStart: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("ETERNA PoC", style = MaterialTheme.typography.headlineMedium, color = EternaColors.TextPrimary)
+        Text("Compose-Unity-Bridge (PoC)", style = MaterialTheme.typography.headlineMedium, color = EternaColors.TextPrimary)
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onStart, colors = ButtonDefaults.buttonColors(containerColor = EternaColors.Accent)) {
             Text("3D 캐릭터 보기")

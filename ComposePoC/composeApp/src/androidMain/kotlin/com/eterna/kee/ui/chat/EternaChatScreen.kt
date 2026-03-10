@@ -9,6 +9,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Stars
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,12 +33,6 @@ import coil.request.ImageRequest
 import com.eterna.kee.media.LocalMediaItem
 import com.eterna.kee.ui.theme.EternaColors
 import java.text.SimpleDateFormat
-
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Stop
-
 import java.util.*
 
 // ── 데이터 모델 ──
@@ -133,7 +135,12 @@ private fun EmptyState() {
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("✦", fontSize = 32.sp, color = EternaColors.Accent)
+            Icon(
+                Icons.Filled.Stars,
+                contentDescription = null,
+                tint = EternaColors.Accent,
+                modifier = Modifier.size(32.dp),
+            )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 "Mirror에게 말을 걸어보세요",
@@ -238,7 +245,7 @@ private fun MediaBubbleContent(uri: Uri, mediaType: MediaType) {
             ) {
                 Surface(shape = CircleShape, color = Color.Black.copy(alpha = 0.6f), modifier = Modifier.size(48.dp)) {
                     Box(contentAlignment = Alignment.Center) {
-                        Text("▶", fontSize = 20.sp, color = Color.White)
+                        Icon(Icons.Filled.PlayArrow, contentDescription = "재생", tint = Color.White)
                     }
                 }
             }
@@ -315,7 +322,10 @@ private fun ChatBottomBar(
                     ),
                     shape = CircleShape,
                 ) {
-                    Text(if (isGalleryOpen) "✕" else "+", fontSize = 20.sp)
+                    Icon(
+                        if (isGalleryOpen) Icons.Filled.Close else Icons.Filled.Add,
+                        contentDescription = if (isGalleryOpen) "닫기" else "첨부",
+                    )
                 }
 
                 Spacer(modifier = Modifier.width(6.dp))
@@ -351,7 +361,7 @@ private fun ChatBottomBar(
                             contentColor = Color.White,
                         ),
                         shape = CircleShape,
-                    ) { Text("➤", fontSize = 18.sp) }
+                    ) { Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "전송") }
                 } else {
                     FilledIconButton(
                         onClick = onMicClick,
@@ -361,7 +371,12 @@ private fun ChatBottomBar(
                             contentColor = if (isRecording) Color.White else EternaColors.TextSecondary,
                         ),
                         shape = CircleShape,
-                    ) { Text(if (isRecording) "■" else "🎤", fontSize = 18.sp) }
+                    ) {
+                        Icon(
+                            if (isRecording) Icons.Filled.Stop else Icons.Filled.Mic,
+                            contentDescription = if (isRecording) "녹음 중지" else "녹음",
+                        )
+                    }
                 }
             }
         }
@@ -372,7 +387,9 @@ private fun ChatBottomBar(
 
 @Composable
 private fun PendingMediaPreview(uri: Uri, mediaType: MediaType, onClear: () -> Unit) {
-    Box(modifier = Modifier.height(80.dp).clip(RoundedCornerShape(12.dp))) {
+    Box(modifier = Modifier
+        .height(80.dp)
+        .clip(RoundedCornerShape(12.dp))) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current).data(uri).crossfade(true).build(),
             contentDescription = "첨부 미리보기",
@@ -384,15 +401,40 @@ private fun PendingMediaPreview(uri: Uri, mediaType: MediaType, onClear: () -> U
         )
         if (mediaType == MediaType.Video) {
             Box(
-                modifier = Modifier.align(Alignment.BottomStart).padding(4.dp)
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(4.dp)
                     .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(4.dp))
                     .padding(horizontal = 4.dp, vertical = 2.dp),
-            ) { Text("▶ 동영상", fontSize = 10.sp, color = Color.White) }
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        Icons.Filled.PlayArrow,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(12.dp)
+                    )
+                    Text("동영상", fontSize = 10.sp, color = Color.White)
+                }
+            }
         }
         Surface(
-            modifier = Modifier.align(Alignment.TopEnd).padding(4.dp).size(20.dp).clickable(onClick = onClear),
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(4.dp)
+                .size(20.dp)
+                .clickable(onClick = onClear),
             shape = CircleShape, color = Color.Black.copy(alpha = 0.6f),
-        ) { Box(contentAlignment = Alignment.Center) { Text("✕", fontSize = 12.sp, color = Color.White) } }
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    Icons.Filled.Close,
+                    contentDescription = "삭제",
+                    tint = Color.White,
+                    modifier = Modifier.size(14.dp)
+                )
+            }
+        }
     }
 }
 
