@@ -30,7 +30,8 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation(project(":unityLibrary"))
-            implementation("androidx.compose.material:material-icons-core:1.7.8")
+            implementation(libs.androidx.material.icons.core)
+            implementation(libs.coil.compose)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
