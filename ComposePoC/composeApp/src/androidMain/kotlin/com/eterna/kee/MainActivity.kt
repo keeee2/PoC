@@ -58,7 +58,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun LauncherScreen(onStart: () -> Unit) {
     Column(
-        modifier = Modifier.fillMaxSize().background(EternaColors.Background),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(EternaColors.Background),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -78,6 +80,12 @@ private fun UnityScreen() {
 
     val messages = remember { mutableStateListOf<ChatMessage>() }
     var inputText by remember { mutableStateOf("") }
+
+    // 실제 물리 화면 높이 (키보드 상태와 무관하게 고정)
+    val overlayHeight = remember {
+        val dm = context.resources.displayMetrics
+        (dm.heightPixels / dm.density * 0.55f).dp
+    }
 
     // 미디어
     var pendingMediaUri by remember { mutableStateOf<Uri?>(null) }
@@ -190,31 +198,43 @@ private fun UnityScreen() {
     // ── UI ──
 
     Box(
-        modifier = Modifier.fillMaxSize().pointerInput(Unit) {
-            detectTapGestures(onTap = { focusManager.clearFocus(); isGalleryOpen = false })
-        }
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = { focusManager.clearFocus(); isGalleryOpen = false })
+            }
     ) {
         AndroidView(factory = { UnityBridge.getView()!! }, modifier = Modifier.fillMaxSize())
 
-        EternaChatOverlay(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.55f).align(Alignment.BottomCenter),
-            messages = messages, inputText = inputText,
-            onInputChange = { inputText = it }, onSend = ::handleSend,
-            onEmotion = { emotion ->
-                UnityBridge.sendMessage("PocCharacter", "PlayEmotion", emotion)
-                messages.add(ChatMessage(text = "[$emotion 감정 재생]", isUser = false))
-            },
-            onAttachToggle = ::handleAttachToggle, isGalleryOpen = isGalleryOpen,
-            galleryItems = galleryItems, onGalleryItemClick = ::handleGalleryItemClick,
-            onCameraClick = ::handleCameraClick, onMicClick = ::handleMicClick,
-            isRecording = isRecording, sttPartialText = sttPartialText,
-            pendingMediaUri = pendingMediaUri, pendingMediaType = pendingMediaType,
-            onClearPendingMedia = { pendingMediaUri = null; pendingMediaType = null },
-            onMediaClick = { uri, type ->
-                fullScreenUri = uri
-                fullScreenMediaType = type
-            },
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding(),
+            contentAlignment = Alignment.BottomCenter,
+        ) {
+            EternaChatOverlay(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(overlayHeight)
+                    .align(Alignment.BottomCenter),
+                messages = messages, inputText = inputText,
+                onInputChange = { inputText = it }, onSend = ::handleSend,
+                onEmotion = { emotion ->
+                    UnityBridge.sendMessage("PocCharacter", "PlayEmotion", emotion)
+                    messages.add(ChatMessage(text = "[$emotion 감정 재생]", isUser = false))
+                },
+                onAttachToggle = ::handleAttachToggle, isGalleryOpen = isGalleryOpen,
+                galleryItems = galleryItems, onGalleryItemClick = ::handleGalleryItemClick,
+                onCameraClick = ::handleCameraClick, onMicClick = ::handleMicClick,
+                isRecording = isRecording, sttPartialText = sttPartialText,
+                pendingMediaUri = pendingMediaUri, pendingMediaType = pendingMediaType,
+                onClearPendingMedia = { pendingMediaUri = null; pendingMediaType = null },
+                onMediaClick = { uri, type ->
+                    fullScreenUri = uri
+                    fullScreenMediaType = type
+                },
+            )
+        }
 
         // 풀스크린 미디어 뷰어 (Unity 위에 오버레이)
         FullScreenMediaViewer(
